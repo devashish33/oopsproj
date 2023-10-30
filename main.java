@@ -1,7 +1,8 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 class User 
 {
     private String username;
@@ -28,19 +29,38 @@ class Customer extends User
         this.customerId = customerId;
         this.balance = balance;
         this.mealsTaken = 0;
+        try 
+        {
+            File myObj = new File("customer"+customerId+".txt");
+            if (myObj.createNewFile()) 
+            {
 
+            } 
+            else 
+            {
+                System.out.println("Customer File already exists.");
+            }
+        } 
+        catch (IOException e) 
+        {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
-
     public void viewAccount() 
     {
         System.out.println("Customer ID: " + customerId);
-        System.out.println("Balance: $" + balance);
+        System.out.println("Balance: Rs." + balance);
         System.out.println("Meals Taken: " + mealsTaken);
     }
 
     public void cancelMeal() 
     {
         // Implement meal cancellation logic here
+    }
+    public int getCustomerId() 
+    {
+        return customerId;
     }
 }
 class Owner extends User 
@@ -74,51 +94,79 @@ public class main
         ArrayList<Owner> owners = loadOwners();
 
         // Load customer and owner data from files and populate the ArrayLists
-        System.out.println ("Choose Userstatus-1.Existing user 2.New user");
-
         // Sample login process
+        System.out.print("Enter Userstatus-1.Existing user 2.New user : ");
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-        User currentUser = null;
-        for (Customer customer : customers) 
+        int status = scanner.nextInt();
+        if (status == 1)
         {
-            if (customer.login(username, password)) 
+            System.out.print("Enter username: ");
+            String username = scanner.next();
+            System.out.print("Enter password: ");
+            String password = scanner.next();
+            User currentUser = null;
+            for (Customer customer : customers) 
             {
-                currentUser = customer;
-                break;
+                if (customer.login(username, password)) 
+                {
+                    currentUser = customer;
+                    break;
+                }
             }
-        }
 
-        for (Owner owner : owners) 
-        {
-            if (owner.login(username, password)) 
+            for (Owner owner : owners) 
             {
-                currentUser = owner;
-                break;
+                if (owner.login(username, password)) 
+                {
+                    currentUser = owner;
+                    break;
+                }
+            }
+            if (currentUser instanceof Customer) 
+            {
+                // Customer specific functionality
+                Customer customer = (Customer) currentUser;
+                customer.viewAccount();
+                System.out.println("you are a customer");
+                // Implement other customer operations
+            } 
+            else if (currentUser instanceof Owner) 
+            {
+                // Owner specific functionality
+                Owner owner = (Owner) currentUser;
+                System.out.println("you are a owner");
+                owner.viewCustomerDetails();
+                // Implement owner operations
+            }
+            else 
+            {
+                System.out.println("Invalid login credentials.");
             }
         }
-        if (currentUser instanceof Customer) 
+        else if(status == 2)
         {
-            // Customer specific functionality
-            Customer customer = (Customer) currentUser;
-            customer.viewAccount();
-            System.out.println("you are a customer");
-            // Implement other customer operations
-        } 
-        else if (currentUser instanceof Owner) 
-        {
-            // Owner specific functionality
-            Owner owner = (Owner) currentUser;
-            System.out.println("you are a owner");
-            owner.viewCustomerDetails();
-            // Implement owner operations
+            System.out.println("Enter details for new user");
+            System.out.print("Enter a customer id: ");
+            int customer_id = scanner.nextInt();
+            System.out.print("Enter a user name: ");
+            String name = scanner.next();
+            System.out.print("Create a password: ");
+            String pass = scanner.next();
+            System.out.print("Enter intial balance: ");
+            Double bal = scanner.nextDouble();
+            Customer n_customer = new Customer(customer_id, name, pass, bal);
+            customers.add(n_customer);
+            /*try {
+                Files.write(Paths.get("customers.txt"), name.getBytes(), StandardOpenOption.APPEND);
+            }
+            catch (IOException e) 
+            {
+                //exception handling left as an exercise for the reader
+            }*/
         }
-        else 
+        else
         {
-            System.out.println("Invalid login credentials.");
+            System.out.println("Please choose a valid option");
         }
     }
     private static ArrayList<Customer> loadCustomers() 
@@ -137,6 +185,7 @@ public class main
                 Customer customer = new Customer(customerId, username, password, balance);
                 customers.add(customer);
             }
+            System.out.println("customerdata loaded sucessfylly");
         } 
         catch (FileNotFoundException e) 
         {
@@ -158,6 +207,7 @@ public class main
                 Owner owner = new Owner(username, password);
                 owners.add(owner);
             }
+            System.out.println("Owner data loaded sucessfully");
         } 
         catch (FileNotFoundException e) 
         {
