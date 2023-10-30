@@ -126,8 +126,14 @@ public class main
             {
                 // Customer specific functionality
                 Customer customer = (Customer) currentUser;
-                customer.viewAccount();
                 System.out.println("you are a customer");
+                System.out.println("Services\n1.View account details\n2.Cancel a meal\n3.View menu\n4.View account statement\n5.exit to login page");
+                System.out.print("choose service: ");
+                int option1 = scanner.nextInt();
+                if(option1 == 1)
+                {
+                    customer.viewAccount();
+                }
                 // Implement other customer operations
             } 
             else if (currentUser instanceof Owner) 
