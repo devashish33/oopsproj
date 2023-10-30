@@ -22,13 +22,13 @@ class Customer extends User
     private int customerId;
     private double balance;
     private int mealsTaken;
-
     public Customer(int customerId, String username, String password, double balance) 
-    {
+    {  
         super(username, password);
         this.customerId = customerId;
         this.balance = balance;
         this.mealsTaken = 0;
+
     }
 
     public void viewAccount() 
@@ -43,7 +43,6 @@ class Customer extends User
         // Implement meal cancellation logic here
     }
 }
-
 class Owner extends User 
 {
     public Owner(String username, String password) 
@@ -54,10 +53,10 @@ class Owner extends User
     public void viewCustomerDetails() 
     {
         // Implement code to view customer details
-        for (Customer customer : customers)
+        /*for (Customer customer : customers)
         {
             System.out.println(customer.getCustomerId() + " - " + customer.getUsername());
-        }
+        }*/
     }
     public void viewBookedMealsForDate(String date) 
     {
@@ -68,13 +67,14 @@ public class main
 {
     public static void main(String[] args) 
     {
-        String CUSTOMERS_FILE = "customers.txt";
-        String OWNERS_FILE = "owners.txt";
+        //String CUSTOMERS_FILE = "customers.txt";
+        //String OWNERS_FILE = "owners.txt";
         // Sample code to create and manage users
         ArrayList<Customer> customers = loadCustomers();
         ArrayList<Owner> owners = loadOwners();
 
         // Load customer and owner data from files and populate the ArrayLists
+        System.out.println ("Choose Userstatus-1.Existing user 2.New user");
 
         // Sample login process
         Scanner scanner = new Scanner(System.in);
@@ -83,7 +83,8 @@ public class main
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
         User currentUser = null;
-        for (Customer customer : customers) {
+        for (Customer customer : customers) 
+        {
             if (customer.login(username, password)) 
             {
                 currentUser = customer;
@@ -104,12 +105,15 @@ public class main
             // Customer specific functionality
             Customer customer = (Customer) currentUser;
             customer.viewAccount();
+            System.out.println("you are a customer");
             // Implement other customer operations
         } 
         else if (currentUser instanceof Owner) 
         {
             // Owner specific functionality
             Owner owner = (Owner) currentUser;
+            System.out.println("you are a owner");
+            owner.viewCustomerDetails();
             // Implement owner operations
         }
         else 
@@ -120,7 +124,7 @@ public class main
     private static ArrayList<Customer> loadCustomers() 
     {
         ArrayList<Customer> customers = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(CUSTOMERS_FILE))) 
+        try (Scanner scanner = new Scanner(new File("customers.txt"))) 
         {
             while (scanner.hasNextLine()) 
             {
@@ -143,7 +147,7 @@ public class main
     private static ArrayList<Owner> loadOwners() 
     {
         ArrayList<Owner> owners = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(OWNERS_FILE))) 
+        try (Scanner scanner = new Scanner(new File("owners.txt"))) 
         {
             while (scanner.hasNextLine()) 
             {
