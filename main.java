@@ -92,7 +92,6 @@ public class main
         // Sample code to create and manage users
         ArrayList<Customer> customers = loadCustomers();
         ArrayList<Owner> owners = loadOwners();
-
         // Load customer and owner data from files and populate the ArrayLists
         // Sample login process
         System.out.print("Enter Userstatus-1.Existing user 2.New user : ");
@@ -162,13 +161,16 @@ public class main
             Double bal = scanner.nextDouble();
             Customer n_customer = new Customer(customer_id, name, pass, bal);
             customers.add(n_customer);
-            /*try {
-                Files.write(Paths.get("customers.txt"), name.getBytes(), StandardOpenOption.APPEND);
-            }
+            try(FileWriter fw = new FileWriter("customers.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+            {
+                out.println(String.valueOf(customer_id)+","+name+","+pass+","+Double.toString(bal));
+            } 
             catch (IOException e) 
             {
                 //exception handling left as an exercise for the reader
-            }*/
+            }
         }
         else
         {
